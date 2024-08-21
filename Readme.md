@@ -1,5 +1,7 @@
 ## Refactoring Exercise
 
+### atricap: Finished the Java version, see tags. Thanks for this nice excercise!
+
 ### Goal
 Here's some really bad code!  It is (intentionally) bad, with lots of
 duplicated/copied and pasted code, improper use of method/classes, bad naming
