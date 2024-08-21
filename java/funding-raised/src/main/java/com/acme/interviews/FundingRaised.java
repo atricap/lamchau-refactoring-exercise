@@ -3,8 +3,6 @@ package com.acme.interviews;
 import java.util.*;
 import java.io.IOException;
 
-import static java.util.stream.Collectors.toList;
-
 public class FundingRaised {
 
     private static final String csvFileName = "startup_funding.csv";
@@ -12,22 +10,7 @@ public class FundingRaised {
     public static List<Map<String, String>> where(Map<String, String> options) throws IOException {
         CsvData csvObj = new CsvData(csvFileName);
 
-        final List<Option> optionsToCheck = List.of(
-                Option.COMPANY_NAME,
-                Option.CITY,
-                Option.STATE,
-                Option.ROUND)
-                .stream()
-                .filter(o -> options.containsKey(o.getColumnName()))
-                .collect(toList());
-
-        for (Option option : optionsToCheck) {
-            if(options.containsKey(option.getColumnName())) {
-                csvObj.filterBy(options, option);
-            }
-        }
-
-        return csvObj.createRowMaps();
+        return csvObj.where(options);
     }
 
     public static Map<String, String> findBy(Map<String, String> options) throws IOException, NoSuchEntryException {

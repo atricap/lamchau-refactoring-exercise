@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.stream.Collectors.toList;
+
 public class CsvData {
     private List<String[]> csvData;
 
@@ -44,6 +46,25 @@ public class CsvData {
 
     static void removeHeaderRow(List<String[]> csvData) {
         csvData.remove(0);
+    }
+
+    public List<Map<String, String>> where(Map<String, String> options) {
+        final List<Option> optionsToCheck = List.of(
+                        Option.COMPANY_NAME,
+                        Option.CITY,
+                        Option.STATE,
+                        Option.ROUND)
+                .stream()
+                .filter(o -> options.containsKey(o.getColumnName()))
+                .collect(toList());
+
+        for (Option option : optionsToCheck) {
+            if(options.containsKey(option.getColumnName())) {
+                filterBy(options, option);
+            }
+        }
+
+        return createRowMaps();
     }
 
     public void filterBy(Map<String, String> options, Option option) {
