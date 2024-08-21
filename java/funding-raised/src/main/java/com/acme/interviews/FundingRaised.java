@@ -48,70 +48,47 @@ public class FundingRaised {
                 if (!csvData.get(i)[1].equals(options.get("company_name"))) {
                     continue;
                 }
-                mapped.put("permalink", csvData.get(i)[0]);
-                mapped.put("company_name", csvData.get(i)[1]);
-                mapped.put("number_employees", csvData.get(i)[2]);
-                mapped.put("category", csvData.get(i)[3]);
-                mapped.put("city", csvData.get(i)[4]);
-                mapped.put("state", csvData.get(i)[5]);
-                mapped.put("funded_date", csvData.get(i)[6]);
-                mapped.put("raised_amount", csvData.get(i)[7]);
-                mapped.put("raised_currency", csvData.get(i)[8]);
-                mapped.put("round", csvData.get(i)[9]);
+                addMappingsForRow(mapped, csvData.get(i));
             }
 
             if(options.containsKey("city")) {
                 if (!csvData.get(i)[4].equals(options.get("city"))) {
                     continue;
                 }
-                mapped.put("permalink", csvData.get(i)[0]);
-                mapped.put("company_name", csvData.get(i)[1]);
-                mapped.put("number_employees", csvData.get(i)[2]);
-                mapped.put("category", csvData.get(i)[3]);
-                mapped.put("city", csvData.get(i)[4]);
-                mapped.put("state", csvData.get(i)[5]);
-                mapped.put("funded_date", csvData.get(i)[6]);
-                mapped.put("raised_amount", csvData.get(i)[7]);
-                mapped.put("raised_currency", csvData.get(i)[8]);
-                mapped.put("round", csvData.get(i)[9]);
+                addMappingsForRow(mapped, csvData.get(i));
             }
 
             if(options.containsKey("state")) {
                 if (!csvData.get(i)[5].equals(options.get("state"))) {
                     continue;
                 }
-                mapped.put("permalink", csvData.get(i)[0]);
-                mapped.put("company_name", csvData.get(i)[1]);
-                mapped.put("number_employees", csvData.get(i)[2]);
-                mapped.put("category", csvData.get(i)[3]);
-                mapped.put("city", csvData.get(i)[4]);
-                mapped.put("state", csvData.get(i)[5]);
-                mapped.put("funded_date", csvData.get(i)[6]);
-                mapped.put("raised_amount", csvData.get(i)[7]);
-                mapped.put("raised_currency", csvData.get(i)[8]);
-                mapped.put("round", csvData.get(i)[9]);
+                addMappingsForRow(mapped, csvData.get(i));
             }
 
             if(options.containsKey("round")) {
                 if (!csvData.get(i)[9].equals(options.get("round"))) {
                     continue;
                 }
-                mapped.put("permalink", csvData.get(i)[0]);
-                mapped.put("company_name", csvData.get(i)[1]);
-                mapped.put("number_employees", csvData.get(i)[2]);
-                mapped.put("category", csvData.get(i)[3]);
-                mapped.put("city", csvData.get(i)[4]);
-                mapped.put("state", csvData.get(i)[5]);
-                mapped.put("funded_date", csvData.get(i)[6]);
-                mapped.put("raised_amount", csvData.get(i)[7]);
-                mapped.put("raised_currency", csvData.get(i)[8]);
-                mapped.put("round", csvData.get(i)[9]);
+                addMappingsForRow(mapped, csvData.get(i));
             }
 
             return mapped;
         }
 
         throw new NoSuchEntryException();
+    }
+
+    private static void addMappingsForRow(Map<String, String> mapped, String[] row) {
+        mapped.put("permalink", row[0]);
+        mapped.put("company_name", row[1]);
+        mapped.put("number_employees", row[2]);
+        mapped.put("category", row[3]);
+        mapped.put("city", row[4]);
+        mapped.put("state", row[5]);
+        mapped.put("funded_date", row[6]);
+        mapped.put("raised_amount", row[7]);
+        mapped.put("raised_currency", row[8]);
+        mapped.put("round", row[9]);
     }
 
     private static List<String[]> readFromCsvFile() throws IOException {
@@ -158,16 +135,7 @@ public class FundingRaised {
 
     private static Map<String, String> createSingleRowMap(String[] row) {
         Map<String, String> mapped = new HashMap<String, String> ();
-        mapped.put("permalink", row[0]);
-        mapped.put("company_name", row[1]);
-        mapped.put("number_employees", row[2]);
-        mapped.put("category", row[3]);
-        mapped.put("city", row[4]);
-        mapped.put("state", row[5]);
-        mapped.put("funded_date", row[6]);
-        mapped.put("raised_amount", row[7]);
-        mapped.put("raised_currency", row[8]);
-        mapped.put("round", row[9]);
+        addMappingsForRow(mapped, row);
         return mapped;
     }
 
