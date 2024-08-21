@@ -12,24 +12,16 @@ public class CsvData {
         this.csvData = csvData;
     }
 
-    public List<String[]> getCsvData() {
-        return csvData;
-    }
-
-    public void setCsvData(List<String[]> csvData) {
-        this.csvData = csvData;
-    }
-
     public void filterBy(Map<String, String> options, Option option) {
-        setCsvData(filteredBy(options, option));
+        this.csvData = filteredBy(options, option);
     }
 
     private List<String[]> filteredBy(Map<String, String> options, Option option) {
         List<String[]> results = new ArrayList<String[]>();
 
-        for (int i = 0; i < getCsvData().size(); i++) {
-            if (getCsvData().get(i)[option.getColumnIndex()].equals(options.get(option.getColumnName()))) {
-                results.add(getCsvData().get(i));
+        for (int i = 0; i < csvData.size(); i++) {
+            if (csvData.get(i)[option.getColumnIndex()].equals(options.get(option.getColumnName()))) {
+                results.add(csvData.get(i));
             }
         }
         return results;
@@ -38,8 +30,8 @@ public class CsvData {
     public List<Map<String, String>> createRowMaps() {
         List<Map<String, String>> output = new ArrayList<Map<String, String>>();
 
-        for(int i = 0; i < getCsvData().size(); i++) {
-            output.add(createSingleRowMap(getCsvData().get(i)));
+        for(int i = 0; i < csvData.size(); i++) {
+            output.add(createSingleRowMap(csvData.get(i)));
         }
         return output;
     }
