@@ -38,39 +38,32 @@ public class FundingRaised {
         }
         Map<String, String> mapped = new HashMap<String, String> ();
 
+        final List<Option> optionsToCheck = List.of(
+                Option.COMPANY_NAME,
+                Option.CITY,
+                Option.STATE,
+                Option.ROUND);
+
+        outer:
         for(int i = 0; i < csvData.size(); i++) {
-            if(options.containsKey(Option.COMPANY_NAME.getColumnName())) {
-                if (!csvData.get(i)[Option.COMPANY_NAME.getColumnIndex()].equals(options.get(Option.COMPANY_NAME.getColumnName()))) {
-                    continue;
-                }
-                addMappingsForRow(mapped, csvData.get(i));
-            }
-
-            if(options.containsKey(Option.CITY.getColumnName())) {
-                if (!csvData.get(i)[Option.CITY.getColumnIndex()].equals(options.get(Option.CITY.getColumnName()))) {
-                    continue;
-                }
-                addMappingsForRow(mapped, csvData.get(i));
-            }
-
-            if(options.containsKey(Option.STATE.getColumnName())) {
-                if (!csvData.get(i)[Option.STATE.getColumnIndex()].equals(options.get(Option.STATE.getColumnName()))) {
-                    continue;
-                }
-                addMappingsForRow(mapped, csvData.get(i));
-            }
-
-            if(options.containsKey(Option.ROUND.getColumnName())) {
-                if (!csvData.get(i)[Option.ROUND.getColumnIndex()].equals(options.get(Option.ROUND.getColumnName()))) {
-                    continue;
-                }
-                addMappingsForRow(mapped, csvData.get(i));
+            for (Option option : optionsToCheck) {
+                if (processFindByOption(options, option, csvData, i, mapped)) continue outer;
             }
 
             return mapped;
         }
 
         throw new NoSuchEntryException();
+    }
+
+    private static boolean processFindByOption(Map<String, String> options, Option companyName, List<String[]> csvData, int i, Map<String, String> mapped) {
+        if (options.containsKey(companyName.getColumnName())) {
+            if (!csvData.get(i)[companyName.getColumnIndex()].equals(options.get(companyName.getColumnName()))) {
+                return true;
+            }
+            addMappingsForRow(mapped, csvData.get(i));
+        }
+        return false;
     }
 
     private static List<String[]> createCsvRows() throws IOException {
