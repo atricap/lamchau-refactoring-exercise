@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public class CsvData {
     private List<String[]> csvData;
@@ -24,15 +25,10 @@ public class CsvData {
     }
 
     static List<String[]> readFromCsvFile(String fileName) throws IOException {
-        List<String[]> csvData = new ArrayList<String[]>();
-        CSVReader reader = new CSVReader(new FileReader(fileName));
-        String[] row = null;
-
-        while((row = reader.readNext()) != null) {
-            csvData.add(row);
+        List<String[]> csvData = null;
+        try (CSVReader csvReader = new CSVReader(new FileReader(fileName))) {
+            csvData = csvReader.readAll();
         }
-
-        reader.close();
         return csvData;
     }
 
@@ -69,29 +65,19 @@ public class CsvData {
     }
 
     private List<String[]> filteredBy(Map<String, String> options, Option option) {
-        List<String[]> results = new ArrayList<String[]>();
-
-        for (int i = 0; i < csvData.size(); i++) {
-            if (csvData.get(i)[option.getColumnIndex()].equals(options.get(option.getColumnName()))) {
-                results.add(csvData.get(i));
-            }
-        }
-        return results;
+        return csvData.stream()
+                .filter(row -> row[option.getColumnIndex()].equals(options.get(option.getColumnName())))
+                .collect(toList());
     }
 
-    public List<Map<String, String>> createRowMaps() {
-        List<Map<String, String>> output = new ArrayList<Map<String, String>>();
-
-        for(int i = 0; i < csvData.size(); i++) {
-            output.add(createSingleRowMap(csvData.get(i)));
-        }
-        return output;
+    private List<Map<String, String>> createRowMaps() {
+        return csvData.stream()
+                .map(CsvData::createSingleRowMap)
+                .collect(toList());
     }
 
     private static Map<String, String> createSingleRowMap(String[] row) {
-        Map<String, String> mapped = new HashMap<String, String>();
-        addMappingsForRow(mapped, row);
-        return mapped;
+        return getRowAsMap(row);
     }
 
     public Optional<Map<String, String>> findBy(Map<String, String> options) {
@@ -119,21 +105,27 @@ public class CsvData {
             if (!csvData.get(i)[companyName.getColumnIndex()].equals(options.get(companyName.getColumnName()))) {
                 return true;
             }
-            addMappingsForRow(mapped, csvData.get(i));
+            mapped.putAll(getRowAsMap(csvData.get(i)));
         }
         return false;
     }
 
-    static void addMappingsForRow(Map<String, String> mapped, String[] row) {
-        mapped.put(Option.PERMALINK.getColumnName(), row[Option.PERMALINK.getColumnIndex()]);
-        mapped.put(Option.COMPANY_NAME.getColumnName(), row[Option.COMPANY_NAME.getColumnIndex()]);
-        mapped.put(Option.NUMBER_EMPLOYEES.getColumnName(), row[Option.NUMBER_EMPLOYEES.getColumnIndex()]);
-        mapped.put(Option.CATEGORY.getColumnName(), row[Option.CATEGORY.getColumnIndex()]);
-        mapped.put(Option.CITY.getColumnName(), row[Option.CITY.getColumnIndex()]);
-        mapped.put(Option.STATE.getColumnName(), row[Option.STATE.getColumnIndex()]);
-        mapped.put(Option.FUNDED_DATE.getColumnName(), row[Option.FUNDED_DATE.getColumnIndex()]);
-        mapped.put(Option.RAISED_AMOUNT.getColumnName(), row[Option.RAISED_AMOUNT.getColumnIndex()]);
-        mapped.put(Option.RAISED_CURRENCY.getColumnName(), row[Option.RAISED_CURRENCY.getColumnIndex()]);
-        mapped.put(Option.ROUND.getColumnName(), row[Option.ROUND.getColumnIndex()]);
+    private static Map<String, String> getRowAsMap(String[] row) {
+        final List<Option> allOptions = List.of(
+                Option.PERMALINK,
+                Option.COMPANY_NAME,
+                Option.NUMBER_EMPLOYEES,
+                Option.CATEGORY,
+                Option.CITY,
+                Option.STATE,
+                Option.FUNDED_DATE,
+                Option.RAISED_AMOUNT,
+                Option.RAISED_CURRENCY,
+                Option.ROUND);
+
+        return allOptions.stream()
+                .collect(toMap(
+                        Option::getColumnName,
+                        option -> row[option.getColumnIndex()]));
     }
 }
