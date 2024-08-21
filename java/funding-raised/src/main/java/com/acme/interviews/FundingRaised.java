@@ -9,20 +9,20 @@ public class FundingRaised {
     public static List<Map<String, String>> where(Map<String, String> options) throws IOException {
         List<String[]> csvData = createCsvRows();
 
-        if(options.containsKey("company_name")) {
-            csvData = filterBy(csvData, options, "company_name", 1);
+        if(options.containsKey(Option.COMPANY_NAME.getColumnName())) {
+            csvData = filterBy(csvData, options, Option.COMPANY_NAME.getColumnName(), Option.COMPANY_NAME.getColumnIndex());
         }
 
-        if(options.containsKey("city")) {
-            csvData = filterBy(csvData, options, "city", 4);
+        if(options.containsKey(Option.CITY.getColumnName())) {
+            csvData = filterBy(csvData, options, Option.CITY.getColumnName(), Option.CITY.getColumnIndex());
         }
 
-        if(options.containsKey("state")) {
-            csvData = filterBy(csvData, options, "state", 5);
+        if(options.containsKey(Option.STATE.getColumnName())) {
+            csvData = filterBy(csvData, options, Option.STATE.getColumnName(), Option.STATE.getColumnIndex());
         }
 
-        if(options.containsKey("round")) {
-            csvData = filterBy(csvData, options, "round", 9);
+        if(options.containsKey(Option.ROUND.getColumnName())) {
+            csvData = filterBy(csvData, options, Option.ROUND.getColumnName(), Option.ROUND.getColumnIndex());
         }
 
         return createRowMaps(csvData);
@@ -36,29 +36,29 @@ public class FundingRaised {
         Map<String, String> mapped = new HashMap<String, String> ();
 
         for(int i = 0; i < csvData.size(); i++) {
-            if(options.containsKey("company_name")) {
-                if (!csvData.get(i)[1].equals(options.get("company_name"))) {
+            if(options.containsKey(Option.COMPANY_NAME.getColumnName())) {
+                if (!csvData.get(i)[Option.COMPANY_NAME.getColumnIndex()].equals(options.get(Option.COMPANY_NAME.getColumnName()))) {
                     continue;
                 }
                 addMappingsForRow(mapped, csvData.get(i));
             }
 
-            if(options.containsKey("city")) {
-                if (!csvData.get(i)[4].equals(options.get("city"))) {
+            if(options.containsKey(Option.CITY.getColumnName())) {
+                if (!csvData.get(i)[Option.CITY.getColumnIndex()].equals(options.get(Option.CITY.getColumnName()))) {
                     continue;
                 }
                 addMappingsForRow(mapped, csvData.get(i));
             }
 
-            if(options.containsKey("state")) {
-                if (!csvData.get(i)[5].equals(options.get("state"))) {
+            if(options.containsKey(Option.STATE.getColumnName())) {
+                if (!csvData.get(i)[Option.STATE.getColumnIndex()].equals(options.get(Option.STATE.getColumnName()))) {
                     continue;
                 }
                 addMappingsForRow(mapped, csvData.get(i));
             }
 
-            if(options.containsKey("round")) {
-                if (!csvData.get(i)[9].equals(options.get("round"))) {
+            if(options.containsKey(Option.ROUND.getColumnName())) {
+                if (!csvData.get(i)[Option.ROUND.getColumnIndex()].equals(options.get(Option.ROUND.getColumnName()))) {
                     continue;
                 }
                 addMappingsForRow(mapped, csvData.get(i));
@@ -127,23 +127,23 @@ public class FundingRaised {
     }
 
     private static void addMappingsForRow(Map<String, String> mapped, String[] row) {
-        mapped.put("permalink", row[0]);
-        mapped.put("company_name", row[1]);
-        mapped.put("number_employees", row[2]);
-        mapped.put("category", row[3]);
-        mapped.put("city", row[4]);
-        mapped.put("state", row[5]);
-        mapped.put("funded_date", row[6]);
-        mapped.put("raised_amount", row[7]);
-        mapped.put("raised_currency", row[8]);
-        mapped.put("round", row[9]);
+        mapped.put(Option.PERMALINK.getColumnName(), row[Option.PERMALINK.getColumnIndex()]);
+        mapped.put(Option.COMPANY_NAME.getColumnName(), row[Option.COMPANY_NAME.getColumnIndex()]);
+        mapped.put(Option.NUMBER_EMPLOYEES.getColumnName(), row[Option.NUMBER_EMPLOYEES.getColumnIndex()]);
+        mapped.put(Option.CATEGORY.getColumnName(), row[Option.CATEGORY.getColumnIndex()]);
+        mapped.put(Option.CITY.getColumnName(), row[Option.CITY.getColumnIndex()]);
+        mapped.put(Option.STATE.getColumnName(), row[Option.STATE.getColumnIndex()]);
+        mapped.put(Option.FUNDED_DATE.getColumnName(), row[Option.FUNDED_DATE.getColumnIndex()]);
+        mapped.put(Option.RAISED_AMOUNT.getColumnName(), row[Option.RAISED_AMOUNT.getColumnIndex()]);
+        mapped.put(Option.RAISED_CURRENCY.getColumnName(), row[Option.RAISED_CURRENCY.getColumnIndex()]);
+        mapped.put(Option.ROUND.getColumnName(), row[Option.ROUND.getColumnIndex()]);
     }
 
     public static void main(String[] args) {
         try {
             Map<String, String> options = new HashMap<String, String> ();
-            options.put("company_name", "Facebook");
-            options.put("round", "a");
+            options.put(Option.COMPANY_NAME.getColumnName(), "Facebook");
+            options.put(Option.ROUND.getColumnName(), "a");
             System.out.print(FundingRaised.where(options).size());
         } catch(IOException e) {
             System.out.print(e.getMessage());
