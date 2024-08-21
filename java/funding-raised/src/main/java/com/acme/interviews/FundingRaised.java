@@ -151,5 +151,3 @@ public class FundingRaised {
         }
     }
 }
-
-class NoSuchEntryException extends Exception {}
