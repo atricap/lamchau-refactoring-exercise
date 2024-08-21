@@ -7,92 +7,40 @@ import java.io.IOException;
 
 public class FundingRaised {
     public static List<Map<String, String>> where(Map<String, String> options) throws IOException {
-        List<String[]> csvData = new ArrayList<String[]>();
-        CSVReader reader = new CSVReader(new FileReader("startup_funding.csv"));
-        String[] row = null;
-
-        while((row = reader.readNext()) != null) {
-            csvData.add(row);
-        }
-
-        reader.close();
-        csvData.remove(0);
+        List<String[]> csvData = createCsvRows();
 
         if(options.containsKey("company_name")) {
-            List<String[]> results = new ArrayList<String[]> ();
-
-            for(int i = 0; i < csvData.size(); i++) {
-                if(csvData.get(i)[1].equals(options.get("company_name"))) {
-                    results.add(csvData.get(i));
-                }
-            }
-            csvData = results;
+            csvData = filterBy(csvData, options, "company_name", 1);
         }
 
         if(options.containsKey("city")) {
-            List<String[]> results = new ArrayList<String[]> ();
-
-            for(int i = 0; i < csvData.size(); i++) {
-                if(csvData.get(i)[4].equals(options.get("city"))) {
-                    results.add(csvData.get(i));
-                }
-            }
-            csvData = results;
+            csvData = filterBy(csvData, options, "city", 4);
         }
 
         if(options.containsKey("state")) {
-            List<String[]> results = new ArrayList<String[]> ();
-
-            for(int i = 0; i < csvData.size(); i++) {
-                if(csvData.get(i)[5].equals(options.get("state"))) {
-                    results.add(csvData.get(i));
-                }
-            }
-            csvData = results;
+            csvData = filterBy(csvData, options, "state", 5);
         }
 
         if(options.containsKey("round")) {
-            List<String[]> results = new ArrayList<String[]> ();
-
-            for(int i = 0; i < csvData.size(); i++) {
-                if(csvData.get(i)[9].equals(options.get("round"))) {
-                    results.add(csvData.get(i));
-                }
-            }
-            csvData = results;
+            csvData = filterBy(csvData, options, "round", 9);
         }
 
-        List<Map<String, String>> output = new ArrayList<Map<String, String>>();
+        return createRowMaps(csvData);
+    }
 
-        for(int i = 0; i < csvData.size(); i++) {
-            Map<String, String> mapped = new HashMap<String, String> ();
-            mapped.put("permalink", csvData.get(i)[0]);
-            mapped.put("company_name", csvData.get(i)[1]);
-            mapped.put("number_employees", csvData.get(i)[2]);
-            mapped.put("category", csvData.get(i)[3]);
-            mapped.put("city", csvData.get(i)[4]);
-            mapped.put("state", csvData.get(i)[5]);
-            mapped.put("funded_date", csvData.get(i)[6]);
-            mapped.put("raised_amount", csvData.get(i)[7]);
-            mapped.put("raised_currency", csvData.get(i)[8]);
-            mapped.put("round", csvData.get(i)[9]);
-            output.add(mapped);
+    private static List<String[]> createCsvRows() throws IOException {
+        List<String[]> csvData = readFromCsvFile();
+        if (hasHeaderRow(csvData)) {
+            removeHeaderRow(csvData);
         }
-
-        return output;
+        return csvData;
     }
 
     public static Map<String, String> findBy(Map<String, String> options) throws IOException, NoSuchEntryException {
-        List<String[]> csvData = new ArrayList<String[]>();
-        CSVReader reader = new CSVReader(new FileReader("startup_funding.csv"));
-        String[] row = null;
-
-        while((row = reader.readNext()) != null) {
-            csvData.add(row);
+        List<String[]> csvData = readFromCsvFile();
+        if (hasHeaderRow(csvData)) {
+            removeHeaderRow(csvData);
         }
-
-        reader.close();
-        csvData.remove(0);
         Map<String, String> mapped = new HashMap<String, String> ();
 
         for(int i = 0; i < csvData.size(); i++) {
@@ -168,6 +116,63 @@ public class FundingRaised {
         }
 
         throw new NoSuchEntryException();
+    }
+
+    private static List<String[]> readFromCsvFile() throws IOException {
+        List<String[]> csvData = new ArrayList<String[]>();
+        CSVReader reader = new CSVReader(new FileReader("startup_funding.csv"));
+        String[] row = null;
+
+        while((row = reader.readNext()) != null) {
+            csvData.add(row);
+        }
+
+        reader.close();
+        return csvData;
+    }
+
+    private static boolean hasHeaderRow(List<String[]> csvData) {
+        // assume header to always exist
+        return true;
+    }
+
+    private static void removeHeaderRow(List<String[]> csvData) {
+        csvData.remove(0);
+    }
+
+    private static List<String[]> filterBy(List<String[]> csvData, Map<String, String> options, String option, int column) {
+        List<String[]> results = new ArrayList<String[]>();
+
+        for (int i = 0; i < csvData.size(); i++) {
+            if (csvData.get(i)[column].equals(options.get(option))) {
+                results.add(csvData.get(i));
+            }
+        }
+        return results;
+    }
+
+    private static List<Map<String, String>> createRowMaps(List<String[]> csvData) {
+        List<Map<String, String>> output = new ArrayList<Map<String, String>>();
+
+        for(int i = 0; i < csvData.size(); i++) {
+            output.add(createSingleRowMap(csvData.get(i)));
+        }
+        return output;
+    }
+
+    private static Map<String, String> createSingleRowMap(String[] row) {
+        Map<String, String> mapped = new HashMap<String, String> ();
+        mapped.put("permalink", row[0]);
+        mapped.put("company_name", row[1]);
+        mapped.put("number_employees", row[2]);
+        mapped.put("category", row[3]);
+        mapped.put("city", row[4]);
+        mapped.put("state", row[5]);
+        mapped.put("funded_date", row[6]);
+        mapped.put("raised_amount", row[7]);
+        mapped.put("raised_currency", row[8]);
+        mapped.put("round", row[9]);
+        return mapped;
     }
 
     public static void main(String[] args) {
