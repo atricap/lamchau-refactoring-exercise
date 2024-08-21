@@ -81,18 +81,17 @@ public class CsvData {
     }
 
     public Optional<Map<String, String>> findBy(Map<String, String> options) {
-        Map<String, String> mapped = new HashMap<String, String> ();
-
         final List<Option> optionsToCheck = List.of(
                 Option.COMPANY_NAME,
                 Option.CITY,
                 Option.STATE,
                 Option.ROUND);
 
+        Map<String, String> mapped = new HashMap<String, String> ();
         outer:
         for(int i = 0; i < csvData.size(); i++) {
             for (Option option : optionsToCheck) {
-                if (processFindByOption(options, option, csvData, i, mapped)) continue outer;
+                if (processFindByOption(mapped, options, option, csvData.get(i))) continue outer;
             }
 
             return Optional.of(mapped);
@@ -100,12 +99,12 @@ public class CsvData {
         return Optional.empty();
     }
 
-    private static boolean processFindByOption(Map<String, String> options, Option companyName, List<String[]> csvData, int i, Map<String, String> mapped) {
-        if (options.containsKey(companyName.getColumnName())) {
-            if (!csvData.get(i)[companyName.getColumnIndex()].equals(options.get(companyName.getColumnName()))) {
+    private static boolean processFindByOption(Map<String, String> mapped, Map<String, String> options, Option option, String[] row) {
+        if (options.containsKey(option.getColumnName())) {
+            if (!row[option.getColumnIndex()].equals(options.get(option.getColumnName()))) {
                 return true;
             }
-            mapped.putAll(getRowAsMap(csvData.get(i)));
+            mapped.putAll(getRowAsMap(row));
         }
         return false;
     }
