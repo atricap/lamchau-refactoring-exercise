@@ -1,4 +1,4 @@
 package com.acme.interviews;
 
-class NoSuchEntryException extends Exception {
+public class NoSuchEntryException extends Exception {
 }

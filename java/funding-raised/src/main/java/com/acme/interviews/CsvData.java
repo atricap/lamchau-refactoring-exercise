@@ -5,6 +5,7 @@ import com.opencsv.CSVReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -25,7 +26,7 @@ public class CsvData {
     }
 
     static List<String[]> readFromCsvFile(String fileName) throws IOException {
-        List<String[]> csvData = null;
+        List<String[]> csvData;
         try (CSVReader csvReader = new CSVReader(new FileReader(fileName))) {
             csvData = csvReader.readAll();
         }
@@ -42,12 +43,11 @@ public class CsvData {
     }
 
     public List<Map<String, String>> where(Map<String, String> options) {
-        final List<Option> optionsToCheck = List.of(
+        final List<Option> optionsToCheck = Stream.of(
                         Option.COMPANY_NAME,
                         Option.CITY,
                         Option.STATE,
                         Option.ROUND)
-                .stream()
                 .filter(o -> options.containsKey(o.getColumnName()))
                 .collect(toList());
 
@@ -72,12 +72,8 @@ public class CsvData {
 
     private List<Map<String, String>> createRowMaps() {
         return csvData.stream()
-                .map(CsvData::createSingleRowMap)
+                .map(CsvData::getRowAsMap)
                 .collect(toList());
-    }
-
-    private static Map<String, String> createSingleRowMap(String[] row) {
-        return getRowAsMap(row);
     }
 
     public Optional<Map<String, String>> findBy(Map<String, String> options) {
@@ -87,11 +83,11 @@ public class CsvData {
                 Option.STATE,
                 Option.ROUND);
 
-        Map<String, String> mapped = new HashMap<String, String> ();
+        Map<String, String> mapped = new HashMap<>();
         outer:
-        for(int i = 0; i < csvData.size(); i++) {
+        for (String[] row : csvData) {
             for (Option option : optionsToCheck) {
-                if (processFindByOption(mapped, options, option, csvData.get(i))) continue outer;
+                if (processFindByOption(mapped, options, option, row)) continue outer;
             }
 
             return Optional.of(mapped);

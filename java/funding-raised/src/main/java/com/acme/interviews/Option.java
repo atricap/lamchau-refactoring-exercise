@@ -1,6 +1,6 @@
 package com.acme.interviews;
 
-enum Option {
+public enum Option {
     PERMALINK("permalink", 0),
     COMPANY_NAME("company_name", 1),
     NUMBER_EMPLOYEES("number_employees", 2),

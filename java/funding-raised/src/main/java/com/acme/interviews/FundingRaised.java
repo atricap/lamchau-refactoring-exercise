@@ -31,7 +31,7 @@ public class FundingRaised {
 
     public static void main(String[] args) {
         try {
-            Map<String, String> options = new HashMap<String, String> ();
+            Map<String, String> options = new HashMap<>();
             options.put(Option.COMPANY_NAME.getColumnName(), "Facebook");
             options.put(Option.ROUND.getColumnName(), "a");
             System.out.print(FundingRaised.where(options).size());
