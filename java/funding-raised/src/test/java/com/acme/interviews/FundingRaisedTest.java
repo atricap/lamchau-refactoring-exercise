@@ -33,6 +33,13 @@ public class FundingRaisedTest
     /**
      * Rigourous Test :-)
      */
+    public void testMain() throws IOException {
+        Map<String, String> options = new HashMap<String, String> ();
+        options.put("company_name", "Facebook");
+        options.put("round", "a");
+        assertEquals(1, FundingRaised.where(options).size());
+    }
+
     public void testWhereGivenCompany() throws IOException {
         Map<String, String> options = new HashMap<String, String> ();
         options.put("company_name", "Facebook");
