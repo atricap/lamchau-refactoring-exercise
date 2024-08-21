@@ -8,13 +8,21 @@ public class FundingRaised {
     private static final String csvFileName = "startup_funding.csv";
 
     public static List<Map<String, String>> where(Map<String, String> options) throws IOException {
-        CsvData csvObj = new CsvData(csvFileName);
+        return where(options, csvFileName);
+    }
+
+    public static List<Map<String, String>> where(Map<String, String> options, String fileName) throws IOException {
+        CsvData csvObj = new CsvData(fileName);
 
         return csvObj.where(options);
     }
 
     public static Map<String, String> findBy(Map<String, String> options) throws IOException, NoSuchEntryException {
-        List<String[]> csvData = CsvData.readFromCsvFile(csvFileName);
+        return findBy(options, csvFileName);
+    }
+
+    public static Map<String, String> findBy(Map<String, String> options, String fileName) throws IOException, NoSuchEntryException {
+        List<String[]> csvData = CsvData.readFromCsvFile(fileName);
         if (CsvData.hasHeaderRow(csvData)) {
             CsvData.removeHeaderRow(csvData);
         }
