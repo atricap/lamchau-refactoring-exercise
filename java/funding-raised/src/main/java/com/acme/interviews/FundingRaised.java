@@ -28,14 +28,6 @@ public class FundingRaised {
         return createRowMaps(csvData);
     }
 
-    private static List<String[]> createCsvRows() throws IOException {
-        List<String[]> csvData = readFromCsvFile();
-        if (hasHeaderRow(csvData)) {
-            removeHeaderRow(csvData);
-        }
-        return csvData;
-    }
-
     public static Map<String, String> findBy(Map<String, String> options) throws IOException, NoSuchEntryException {
         List<String[]> csvData = readFromCsvFile();
         if (hasHeaderRow(csvData)) {
@@ -78,17 +70,12 @@ public class FundingRaised {
         throw new NoSuchEntryException();
     }
 
-    private static void addMappingsForRow(Map<String, String> mapped, String[] row) {
-        mapped.put("permalink", row[0]);
-        mapped.put("company_name", row[1]);
-        mapped.put("number_employees", row[2]);
-        mapped.put("category", row[3]);
-        mapped.put("city", row[4]);
-        mapped.put("state", row[5]);
-        mapped.put("funded_date", row[6]);
-        mapped.put("raised_amount", row[7]);
-        mapped.put("raised_currency", row[8]);
-        mapped.put("round", row[9]);
+    private static List<String[]> createCsvRows() throws IOException {
+        List<String[]> csvData = readFromCsvFile();
+        if (hasHeaderRow(csvData)) {
+            removeHeaderRow(csvData);
+        }
+        return csvData;
     }
 
     private static List<String[]> readFromCsvFile() throws IOException {
@@ -137,6 +124,19 @@ public class FundingRaised {
         Map<String, String> mapped = new HashMap<String, String> ();
         addMappingsForRow(mapped, row);
         return mapped;
+    }
+
+    private static void addMappingsForRow(Map<String, String> mapped, String[] row) {
+        mapped.put("permalink", row[0]);
+        mapped.put("company_name", row[1]);
+        mapped.put("number_employees", row[2]);
+        mapped.put("category", row[3]);
+        mapped.put("city", row[4]);
+        mapped.put("state", row[5]);
+        mapped.put("funded_date", row[6]);
+        mapped.put("raised_amount", row[7]);
+        mapped.put("raised_currency", row[8]);
+        mapped.put("round", row[9]);
     }
 
     public static void main(String[] args) {
