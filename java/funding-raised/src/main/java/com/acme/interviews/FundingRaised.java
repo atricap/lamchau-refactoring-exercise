@@ -6,8 +6,11 @@ import java.io.IOException;
 import static java.util.stream.Collectors.toList;
 
 public class FundingRaised {
+
+    private static final String csvFileName = "startup_funding.csv";
+
     public static List<Map<String, String>> where(Map<String, String> options) throws IOException {
-        CsvData csvObj = new CsvData("startup_funding.csv");
+        CsvData csvObj = new CsvData(csvFileName);
 
         final List<Option> optionsToCheck = List.of(
                 Option.COMPANY_NAME,
@@ -28,7 +31,7 @@ public class FundingRaised {
     }
 
     public static Map<String, String> findBy(Map<String, String> options) throws IOException, NoSuchEntryException {
-        List<String[]> csvData = CsvData.readFromCsvFile("startup_funding.csv");
+        List<String[]> csvData = CsvData.readFromCsvFile(csvFileName);
         if (CsvData.hasHeaderRow(csvData)) {
             CsvData.removeHeaderRow(csvData);
         }
