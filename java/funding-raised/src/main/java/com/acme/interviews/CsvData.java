@@ -1,5 +1,9 @@
 package com.acme.interviews;
 
+import com.opencsv.CSVReader;
+
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,8 +12,38 @@ import java.util.Map;
 public class CsvData {
     private List<String[]> csvData;
 
-    public CsvData(List<String[]> csvData) {
-        this.csvData = csvData;
+    public CsvData(String fileName) throws IOException{
+        this.csvData = createCsvRows(fileName);
+    }
+
+    private List<String[]> createCsvRows(String fileName) throws IOException {
+        List<String[]> csvData = readFromCsvFile(fileName);
+        if (hasHeaderRow(csvData)) {
+            removeHeaderRow(csvData);
+        }
+        return csvData;
+    }
+
+    static List<String[]> readFromCsvFile(String fileName) throws IOException {
+        List<String[]> csvData = new ArrayList<String[]>();
+        CSVReader reader = new CSVReader(new FileReader(fileName));
+        String[] row = null;
+
+        while((row = reader.readNext()) != null) {
+            csvData.add(row);
+        }
+
+        reader.close();
+        return csvData;
+    }
+
+    static boolean hasHeaderRow(List<String[]> csvData) {
+        // assume header to always exist
+        return true;
+    }
+
+    static void removeHeaderRow(List<String[]> csvData) {
+        csvData.remove(0);
     }
 
     public void filterBy(Map<String, String> options, Option option) {
