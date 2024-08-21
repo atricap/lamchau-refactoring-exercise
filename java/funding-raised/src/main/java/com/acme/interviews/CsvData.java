@@ -4,10 +4,7 @@ import com.opencsv.CSVReader;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -95,6 +92,36 @@ public class CsvData {
         Map<String, String> mapped = new HashMap<String, String>();
         addMappingsForRow(mapped, row);
         return mapped;
+    }
+
+    public Optional<Map<String, String>> findBy(Map<String, String> options) {
+        Map<String, String> mapped = new HashMap<String, String> ();
+
+        final List<Option> optionsToCheck = List.of(
+                Option.COMPANY_NAME,
+                Option.CITY,
+                Option.STATE,
+                Option.ROUND);
+
+        outer:
+        for(int i = 0; i < csvData.size(); i++) {
+            for (Option option : optionsToCheck) {
+                if (processFindByOption(options, option, csvData, i, mapped)) continue outer;
+            }
+
+            return Optional.of(mapped);
+        }
+        return Optional.empty();
+    }
+
+    private static boolean processFindByOption(Map<String, String> options, Option companyName, List<String[]> csvData, int i, Map<String, String> mapped) {
+        if (options.containsKey(companyName.getColumnName())) {
+            if (!csvData.get(i)[companyName.getColumnIndex()].equals(options.get(companyName.getColumnName()))) {
+                return true;
+            }
+            addMappingsForRow(mapped, csvData.get(i));
+        }
+        return false;
     }
 
     static void addMappingsForRow(Map<String, String> mapped, String[] row) {

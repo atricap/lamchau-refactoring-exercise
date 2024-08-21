@@ -22,38 +22,11 @@ public class FundingRaised {
     }
 
     public static Map<String, String> findBy(Map<String, String> options, String fileName) throws IOException, NoSuchEntryException {
-        List<String[]> csvData = CsvData.readFromCsvFile(fileName);
-        if (CsvData.hasHeaderRow(csvData)) {
-            CsvData.removeHeaderRow(csvData);
-        }
-        Map<String, String> mapped = new HashMap<String, String> ();
+        CsvData csvObj = new CsvData(fileName);
 
-        final List<Option> optionsToCheck = List.of(
-                Option.COMPANY_NAME,
-                Option.CITY,
-                Option.STATE,
-                Option.ROUND);
+        Optional<Map<String, String>> mapped = csvObj.findBy(options);
 
-        outer:
-        for(int i = 0; i < csvData.size(); i++) {
-            for (Option option : optionsToCheck) {
-                if (processFindByOption(options, option, csvData, i, mapped)) continue outer;
-            }
-
-            return mapped;
-        }
-
-        throw new NoSuchEntryException();
-    }
-
-    private static boolean processFindByOption(Map<String, String> options, Option companyName, List<String[]> csvData, int i, Map<String, String> mapped) {
-        if (options.containsKey(companyName.getColumnName())) {
-            if (!csvData.get(i)[companyName.getColumnIndex()].equals(options.get(companyName.getColumnName()))) {
-                return true;
-            }
-            CsvData.addMappingsForRow(mapped, csvData.get(i));
-        }
-        return false;
+        return mapped.orElseThrow(NoSuchEntryException::new);
     }
 
     public static void main(String[] args) {
