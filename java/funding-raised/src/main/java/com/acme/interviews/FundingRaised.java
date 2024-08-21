@@ -4,25 +4,28 @@ import java.util.*;
 import com.opencsv.CSVReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 public class FundingRaised {
     public static List<Map<String, String>> where(Map<String, String> options) throws IOException {
         List<String[]> csvData = createCsvRows();
 
-        if(options.containsKey(Option.COMPANY_NAME.getColumnName())) {
-            csvData = filterBy(csvData, options, Option.COMPANY_NAME.getColumnName(), Option.COMPANY_NAME.getColumnIndex());
-        }
+        final List<Option> optionsToCheck = List.of(
+                Option.COMPANY_NAME,
+                Option.CITY,
+                Option.STATE,
+                Option.ROUND)
+                .stream()
+                .filter(o -> options.containsKey(o.getColumnName()))
+                .collect(toList());
 
-        if(options.containsKey(Option.CITY.getColumnName())) {
-            csvData = filterBy(csvData, options, Option.CITY.getColumnName(), Option.CITY.getColumnIndex());
-        }
-
-        if(options.containsKey(Option.STATE.getColumnName())) {
-            csvData = filterBy(csvData, options, Option.STATE.getColumnName(), Option.STATE.getColumnIndex());
-        }
-
-        if(options.containsKey(Option.ROUND.getColumnName())) {
-            csvData = filterBy(csvData, options, Option.ROUND.getColumnName(), Option.ROUND.getColumnIndex());
+        for (Option option : optionsToCheck) {
+            if(options.containsKey(option.getColumnName())) {
+                csvData = filterBy(csvData, options, option.getColumnName(), option.getColumnIndex());
+            }
         }
 
         return createRowMaps(csvData);
